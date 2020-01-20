@@ -26,7 +26,7 @@ import frc.robot.subsystems.DriveSubsystem;
 public class Robot extends TimedRobot {
   public static OI oi;
   public static DriveSubsystem driveSubsystem = new DriveSubsystem();
-
+  public Drive drive;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -114,8 +114,9 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    Drive drive = new Drive(oi.getController());
-    drive.execute();
+    drive = new Drive(oi.getController());
+    // drive.start();
+    drive.initialize();
   }
 
   /**
@@ -124,6 +125,7 @@ public class Robot extends TimedRobot {
   
   public void teleopPeriodic() {
     CommandScheduler.getInstance().run();
+    drive.execute();
   }
 
   /**

@@ -18,13 +18,17 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
  * Add your docs here.
  */
 public class DriveSubsystem implements Subsystem {
-  private TalonSRX leftMotor;
-  private TalonSRX rightMotor;
+  private TalonSRX leftFrontMotor;
+  private TalonSRX rightFrontMotor;
+  private TalonSRX leftBackMotor;
+  private TalonSRX rightBackMotor;
 
   public DriveSubsystem() {
-    leftMotor = new TalonSRX(RobotMap.leftMotorPort);
-    rightMotor = new TalonSRX(RobotMap.rightMotorPort);
-    rightMotor.setInverted(true); 
+    leftFrontMotor = new TalonSRX(RobotMap.leftFrontMotor);
+    rightFrontMotor = new TalonSRX(RobotMap.rightFrontMotor);
+    leftBackMotor = new TalonSRX(RobotMap.leftBackMotor);
+    rightBackMotor = new TalonSRX(RobotMap.rightBackMotor);
+    // rightMotor.setInverted(true); 
   }
   
   // Put methods for controlling this subsystem
@@ -39,9 +43,13 @@ public class DriveSubsystem implements Subsystem {
     setMotors(0, 0);
   }
 
+  public static final double deadzone = 0.5;
   public void drive(double forwards, double turning) {
-    double left = forwards+turning;
-    double right = forwards-turning;
+    // turning *= 0.8;
+    forwards = (forwards - deadzone) / (1 - deadzone);
+    turning = (turning - deadzone) / (1 - deadzone);
+    double left = forwards + turning;
+    double right = forwards - turning;
     if (Math.abs(left) > 1 || Math.abs(right) > 1) {
       if (Math.abs(left) > Math.abs(right)) {
         right *= 1/Math.abs(left);
@@ -52,11 +60,15 @@ public class DriveSubsystem implements Subsystem {
         left *= 1/Math.abs(right);
       }
     }
+    left *= 0.5;
+    right *= 0.5;
     setMotors(left, right);
   }
 
   public void setMotors(double left, double right) {
-    leftMotor.set(ControlMode.PercentOutput, left);
-    rightMotor.set(ControlMode.PercentOutput, right);
+    leftFrontMotor.set(ControlMode.PercentOutput, left);
+    leftBackMotor.set(ControlMode.PercentOutput, left);
+    rightFrontMotor.set(ControlMode.PercentOutput, right);
+    rightBackMotor.set(ControlMode.PercentOutput, right);
   }
 }

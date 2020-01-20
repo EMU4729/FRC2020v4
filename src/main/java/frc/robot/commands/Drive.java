@@ -28,7 +28,8 @@ public class Drive extends CommandBase {
   // Called repeatedly when this Command is scheduled to run
   
   public void execute() {
-    Robot.driveSubsystem.drive(controller.getY(),controller.getRawAxis(RobotMap.leftStickX));
+    // System.out.println(controller.getY());
+    Robot.driveSubsystem.drive(controller.getRawAxis(RobotMap.leftStickY), controller.getX());
   }
 
   // Make this return true when this Command no longer needs to run execute()
