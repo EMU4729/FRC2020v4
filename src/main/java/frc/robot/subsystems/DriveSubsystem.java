@@ -43,11 +43,19 @@ public class DriveSubsystem implements Subsystem {
     setMotors(0, 0);
   }
 
-  public static final double deadzone = 0.5;
+  public static final double deadzone = 0.1;
   public void drive(double forwards, double turning) {
     // turning *= 0.8;
-    forwards = (forwards - deadzone) / (1 - deadzone);
-    turning = (turning - deadzone) / (1 - deadzone);
+    double forwardsSign = Math.signum(forwards);
+    forwards = (Math.abs(forwards) - deadzone) / (1 - deadzone);
+    if (forwards < 0) forwards = 0;
+    forwards *= forwardsSign;
+
+    double turningSign = Math.signum(turning);
+    turning = (Math.abs(turning) - deadzone) / (1 - deadzone);
+    if (turning < 0) turning = 0;
+    turning *= turningSign;
+
     double left = forwards + turning;
     double right = forwards - turning;
     if (Math.abs(left) > 1 || Math.abs(right) > 1) {
@@ -60,8 +68,8 @@ public class DriveSubsystem implements Subsystem {
         left *= 1/Math.abs(right);
       }
     }
-    left *= 0.5;
-    right *= 0.5;
+    // left *= 0.5;
+    // right *= 0.5;
     setMotors(left, right);
   }
 

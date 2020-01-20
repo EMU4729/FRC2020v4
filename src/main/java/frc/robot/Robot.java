@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.Drive;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.*;
 
 
 /**
@@ -26,6 +26,7 @@ import frc.robot.subsystems.DriveSubsystem;
 public class Robot extends TimedRobot {
   public static OI oi;
   public static DriveSubsystem driveSubsystem = new DriveSubsystem();
+  public static ColourSubsystem colourSubsystem = new ColourSubsystem();
   public Drive drive;
 
   Command m_autonomousCommand;
@@ -126,6 +127,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     CommandScheduler.getInstance().run();
     drive.execute();
+    colourSubsystem.getColour();
   }
 
   /**
