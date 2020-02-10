@@ -26,13 +26,23 @@ public class RobotMap {
 
   public static int leftFrontMotor = 3; 
   public static int rightFrontMotor = 1;
-  public static int leftBackMotor = 4;
+  public static int leftBackMotor = 5;
   public static int rightBackMotor = 2;
-
+  public static int shooterMotor = 4;
+  public static int intakeArm = 0;
+  public static int frontBelt = 7;
+  public static int backBelt = 6;
+  public static int horizontalBelt = 8;
 
   public static int buttonIDA = 1;
+
   public static int buttonIDB = 2;
   public static int leftStickY = 1;
+
+  public static int backUltraSonicEcho = 9;
+  public static int backUltraSonicTrigger = 8;
+  public static int frontUltraSonicEcho = 7;
+  public static int frontUltraSonicTrigger = 6;
 
 }
 

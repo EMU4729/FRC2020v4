@@ -10,6 +10,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 // import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.IntakeArm;
+import frc.robot.commands.Shooter;
+import frc.robot.subsystems.ShooterSubsystem;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -46,9 +49,13 @@ public class OI {
   private XboxController controller = new XboxController(0);
   private JoystickButton a;
   private JoystickButton b;
+  
   public OI() {
     a = new JoystickButton(controller, RobotMap.buttonIDA);
     b = new JoystickButton(controller, RobotMap.buttonIDB);
+
+    a.whenPressed(new Shooter(a));
+    b.whenPressed(new IntakeArm(b));
   } 
 
   public XboxController getController() {

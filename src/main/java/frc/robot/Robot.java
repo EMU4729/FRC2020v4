@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* must be accompanied by the FIRST BSD license file in the root directory %%of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.Drive;
+import frc.robot.commands.Shooter;
 import frc.robot.subsystems.*;
 
 
@@ -27,7 +28,14 @@ public class Robot extends TimedRobot {
   public static OI oi;
   public static DriveSubsystem driveSubsystem = new DriveSubsystem();
   public static ColourSubsystem colourSubsystem = new ColourSubsystem();
+  public static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+  public static UltraSonicSubsystem ultraSonicSubsystem = new UltraSonicSubsystem();
+  // public static CameraSubsystem cameraSubsystem = new CameraSubsystem();
+  public static VisionSubsystem visionSubsystem = new VisionSubsystem();
+  public static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  public static BeltSubsystem beltSubsystem = new BeltSubsystem();
   public Drive drive;
+  public Shooter shooter;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -39,6 +47,7 @@ public class Robot extends TimedRobot {
   
   public void robotInit() {
     oi = new OI();
+    visionSubsystem.startCamera();
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
   }
@@ -128,6 +137,9 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     drive.execute();
     colourSubsystem.getColour();
+    ultraSonicSubsystem.getBackDistance();
+    visionSubsystem.getAdjustmentAngle();
+    beltSubsystem.checkBelts();
   }
 
   /**
