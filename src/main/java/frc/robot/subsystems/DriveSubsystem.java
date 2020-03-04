@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import frc.robot.RobotMap;
 import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -22,6 +23,7 @@ public class DriveSubsystem implements Subsystem {
   private TalonSRX rightFrontMotor;
   private TalonSRX leftBackMotor;
   private TalonSRX rightBackMotor;
+  private double direction; //1 for shooter side, -1 for intake side
 
   public DriveSubsystem() {
     leftFrontMotor = new TalonSRX(RobotMap.leftFrontMotor);
@@ -29,6 +31,8 @@ public class DriveSubsystem implements Subsystem {
     leftBackMotor = new TalonSRX(RobotMap.leftBackMotor);
     rightBackMotor = new TalonSRX(RobotMap.rightBackMotor);
     // rightMotor.setInverted(true); 
+    direction = 0.75;
+    SmartDashboard.putString("Direction", "Shooter side");
   }
   
   // Put methods for controlling this subsystem
@@ -56,8 +60,8 @@ public class DriveSubsystem implements Subsystem {
     if (turning < 0) turning = 0;
     turning *= turningSign;
 
-    double left = forwards + turning;
-    double right = forwards - turning;
+    double left = forwards + direction*turning;
+    double right = forwards - direction*turning;
     if (Math.abs(left) > 1 || Math.abs(right) > 1) {
       if (Math.abs(left) > Math.abs(right)) {
         right *= 1/Math.abs(left);
@@ -71,6 +75,15 @@ public class DriveSubsystem implements Subsystem {
     // left *= 0.5;
     // right *= 0.5;
     setMotors(left, right);
+  }
+
+  public void toggleDirection() {
+    direction *= -1;
+    if (direction > 0) {
+      SmartDashboard.putString("Direction", "Shooter side");
+    } else {
+      SmartDashboard.putString("Direction", "Intake side");
+    }
   }
 
   public void setMotors(double left, double right) {

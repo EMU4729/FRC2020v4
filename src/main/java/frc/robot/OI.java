@@ -10,8 +10,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 // import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.FlipDirection;
 import frc.robot.commands.IntakeArm;
 import frc.robot.commands.Shooter;
+import frc.robot.commands.WheelOfFortune;
 import frc.robot.subsystems.ShooterSubsystem;
 
 /**
@@ -49,13 +51,20 @@ public class OI {
   private XboxController controller = new XboxController(0);
   private JoystickButton a;
   private JoystickButton b;
+  private JoystickButton y;
+  private JoystickButton rightBumper;
   
   public OI() {
     a = new JoystickButton(controller, RobotMap.buttonIDA);
     b = new JoystickButton(controller, RobotMap.buttonIDB);
-
+    y = new JoystickButton(controller, RobotMap.buttonIDY);
+    rightBumper = new JoystickButton(controller, RobotMap.buttonIDRightBumper);
     a.whenPressed(new Shooter(a));
     b.whenPressed(new IntakeArm(b));
+    b.whenPressed(new IntakeArm(b));
+    y.whenPressed(new FlipDirection());
+    rightBumper.whenPressed(new WheelOfFortune(rightBumper));
+    
   } 
 
   public XboxController getController() {

@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -21,11 +22,15 @@ public class IntakeSubsystem implements Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
   private VictorSPX intake;
-  private VictorSPX belt;
+  private TalonSRX belt;
+  public boolean isOn;
+  public boolean isActive;
 
   public IntakeSubsystem() {
     intake = new VictorSPX(RobotMap.intakeArm);
-    belt = new VictorSPX(RobotMap.horizontalBelt);
+    belt = new TalonSRX(RobotMap.horizontalBelt);
+    isOn = false;
+    isActive = false;
   }
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
@@ -34,16 +39,30 @@ public class IntakeSubsystem implements Subsystem {
   public void stop() {
     intake.set(ControlMode.PercentOutput, 0);
     belt.set(ControlMode.PercentOutput, 0);
+    isOn = false;
   }
 
   public void start(){
-    // Swap back sensor for front sensor when it is wired
-    double backDistance = Robot.ultraSonicSubsystem.getBackDistance();
-    intake.set(ControlMode.PercentOutput, 0.5);
-    if (backDistance > 70) {
-      belt.set(ControlMode.PercentOutput, 0.5);
-    } else {
+    double frontDistance = Robot.ultraSonicSubsystem.getFrontDistance();
+    frontDistance = 100;
+    intake.set(ControlMode.PercentOutput, -0.5);
+    if (Robot.beltSubsystem.beltTimer.get() < 0.1 && Robot.beltSubsystem.isOn) {
       belt.set(ControlMode.PercentOutput, 0);
+      isOn = false;
+    } else if (frontDistance > 70) {
+      belt.set(ControlMode.PercentOutput, 0.6);
+      isOn = true;
+    } else if (Robot.beltSubsystem.ballCount == 4) {
+      Robot.beltSubsystem.ballCount += 1;
+      belt.set(ControlMode.PercentOutput, 0);
+      isOn = false;
     }
   }
+  public void startBelt() {
+    belt.set(ControlMode.PercentOutput, 0.6);
+  }
+  public void stopBelt() {
+    belt.set(ControlMode.PercentOutput, 0);
+  }
 }
+

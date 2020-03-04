@@ -10,9 +10,12 @@ package frc.robot.subsystems;
 import java.io.Console;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
@@ -25,14 +28,22 @@ public class BeltSubsystem implements Subsystem {
   // here. Call these from Commands.
   private VictorSPX frontBelt;
   private VictorSPX backBelt;
-  private Timer beltTimer;
-  private boolean isOn;
+  public Timer beltTimer;
+  private Timer downTimer;
+  public boolean isOn;
+  private XboxController controller;
+  public double ballCount;
 
   public BeltSubsystem() {
     frontBelt = new VictorSPX(RobotMap.frontBelt);
     backBelt = new VictorSPX(RobotMap.backBelt);
     beltTimer = new Timer();
+    downTimer = new Timer();
+    downTimer.start();
+    controller = new XboxController(0);
     isOn = false;
+    ballCount = 0;
+    SmartDashboard.putNumber("Ball Count", ballCount);
   }
 
   public void initDefaultCommand() {
@@ -43,29 +54,54 @@ public class BeltSubsystem implements Subsystem {
   public void stop() {
     frontBelt.set(ControlMode.PercentOutput, 0);
     backBelt.set(ControlMode.PercentOutput, 0);
+    isOn = false;
   }
 
   public void start(){
-    frontBelt.set(ControlMode.PercentOutput, 0.5);
-    backBelt.set(ControlMode.PercentOutput, 0.5);
+    frontBelt.set(ControlMode.PercentOutput, 0.7);
+    backBelt.set(ControlMode.PercentOutput, -0.7);
+  }
+  public void startFast() {
+    isOn = true;
+    frontBelt.set(ControlMode.PercentOutput, 1);
+    backBelt.set(ControlMode.PercentOutput, -1);
   }
 
   public void checkBelts() {
     double backDistance = Robot.ultraSonicSubsystem.getBackDistance();
     double frontDistance = Robot.ultraSonicSubsystem.getFrontDistance();
-    int onTime = 1;
-
-    if (backDistance < 70 && !isOn) {
+    double onTime = 0.7;
+    //test with controller
+    ballCount = SmartDashboard.getNumber("Ball Count", 0);
+    if ((controller.getRawButton(7) | (backDistance > 200 | backDistance < 100)) && !isOn) {
       start();
+      Robot.intakeSubsystem.startBelt();
+      beltTimer.reset();
       beltTimer.start();
       isOn = true;
+      ballCount += 1;
+      SmartDashboard.putNumber("Ball Count", ballCount);
       // System.out.print("started motors due to ultrasonic input");
-    } else if (beltTimer.get() > onTime) {
+    } else if (beltTimer.get() > onTime  && !Robot.shooterSubsystem.isOn) {
       stop();
+      if (!Robot.intakeSubsystem.isOn) {
+        Robot.intakeSubsystem.stopBelt();
+      }
+      
       isOn = false;
       beltTimer.stop();
       beltTimer.reset();
-      // System.out.print("stopped motors due to ultrasonic input");
+      downTimer.start();
+      // System.out.print("stopped motors% due to ultrasonic input");
+    }
+    if (downTimer.get() > 5 && downTimer.get() < 5.2 && !isOn) {
+      frontBelt.set(ControlMode.PercentOutput, -0.5);
+      backBelt.set(ControlMode.PercentOutput, 0.5);
+      
+    } else if (!isOn) {
+      downTimer.stop();
+      downTimer.reset();
+      stop();
     }
   }
 }

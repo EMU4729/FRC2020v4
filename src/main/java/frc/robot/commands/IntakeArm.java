@@ -14,9 +14,13 @@ import frc.robot.RobotMap;
 
 public class IntakeArm extends CommandBase {
   JoystickButton button;
+  boolean buttonPressed;
+  Boolean isOn;
 
   public IntakeArm(JoystickButton button) {
     this.button = button;
+    isOn = false;
+    buttonPressed = false;
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
   }
@@ -27,15 +31,21 @@ public class IntakeArm extends CommandBase {
 
   // Called repeatedly when this Command is scheduled to run
   public void execute() {
-    Robot.intakeSubsystem.start();
+    if (button.get() && !buttonPressed) {
+      isOn = !isOn;
+      buttonPressed = true;
+    } else if (!button.get()) {
+      buttonPressed = false;
+    }
+    if (isOn) {
+      Robot.intakeSubsystem.start();
+    } else {
+      Robot.intakeSubsystem.stop();
+    }
   }
 
   // Make this return true when this Command  no longer needs to run execute()
   public boolean isFinished() {
-    if (!button.get()) {
-      Robot.intakeSubsystem.stop();
-      return true;
-    }
     return false;
   }
 

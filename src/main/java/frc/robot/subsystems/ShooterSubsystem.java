@@ -7,7 +7,10 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.Shooter;
 
@@ -22,9 +25,13 @@ public class ShooterSubsystem implements Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
   private TalonSRX shooter;
+  public boolean isOn;
+  private Timer beltTimer;
 
   public ShooterSubsystem(){
     shooter = new TalonSRX(RobotMap.shooterMotor);
+    isOn = false;
+    beltTimer = new Timer();
   }
 
   public void initDefaultCommand() {
@@ -34,9 +41,24 @@ public class ShooterSubsystem implements Subsystem {
 
   public void stop() {
     shooter.set(ControlMode.PercentOutput, 0);
+    isOn = false;
+    beltTimer.stop();
+    beltTimer.reset();
+    Robot.beltSubsystem.stop();
+
   }
 
   public void shoot(){
-    shooter.set(ControlMode.PercentOutput, 0.5);
+    if (beltTimer.get() == 0) {
+      beltTimer.start();
+    }
+
+    if (beltTimer.get() > 0.4) {
+      Robot.beltSubsystem.startFast();
+    }
+    shooter.set(ControlMode.PercentOutput, -1);
+    isOn = true;
+    Robot.beltSubsystem.ballCount = 0;
+    SmartDashboard.putNumber("Ball Count", Robot.beltSubsystem.ballCount);
   }
 }
