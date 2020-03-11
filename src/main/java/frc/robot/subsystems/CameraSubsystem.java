@@ -46,4 +46,8 @@ public class CameraSubsystem implements Subsystem {
       
       // camera.setExposureManual(20);
   }
+
+  public void foundtarget(){
+    //TO IMPLEMENT...
+  }
 }

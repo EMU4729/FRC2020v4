@@ -34,7 +34,9 @@ public class Robot extends TimedRobot {
   public static VisionSubsystem visionSubsystem = new VisionSubsystem();
   public static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   public static BeltSubsystem beltSubsystem = new BeltSubsystem();
+  public static CameraSubsystem cameraSubsystem = new CameraSubsystem();
   public static WheelOfFortuneSubsystem wheelOfFortuneSubsystem = new WheelOfFortuneSubsystem();
+public static Object AutonomousCommand;
   public Drive drive;
   public Shooter shooter;
 

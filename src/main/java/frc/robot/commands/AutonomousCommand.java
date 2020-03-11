@@ -6,8 +6,14 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot.commands;
+
 import frc.robot.Robot;
 import frc.robot.RobotMap;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
@@ -21,10 +27,11 @@ public class AutonomousCommand extends SequentialCommandGroup {
   public AutonomousCommand() {
     // Add your commands in the super() call, e.g.
     // super(new FooCommand(), new BarCommand());
-    if (targetfound()) {
-      while (Robot.Shooter.isFinished() == false){
-        Robot.Shooter.excute();
-      }
+    if (Robot.cameraSubsystem.foundtarget()) {
+      Robot.shooterSubsystem.shoot();
+      Timer timer = new Timer();
+      timer.wait(5000);
+      Robot.shooterSubsystem.stop();
     }
   }
 }
