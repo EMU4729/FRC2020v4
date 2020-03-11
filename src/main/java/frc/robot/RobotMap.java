@@ -32,21 +32,28 @@ public class RobotMap {
   public static int intakeArm = 0;
   public static int frontBelt = 7;
   public static int backBelt = 6;
-  public static int horizontalBelt = 9;
+  public static int horizontalBelt = 8;
   public static int climber = 9;
   public static int wheelOfFortune = 10;
  
   public static int buttonIDA = 1;
-
   public static int buttonIDB = 2;
   public static int buttonIDY = 4;
+  public static int buttonIDX = 3;
   public static int buttonIDRightBumper = 6;
+  public static int buttonIDLeftBumper = 5;
   public static int leftStickY = 1;
+  public static int buttonIDStart = 8;
+  public static int buttonIDBack = 7;
 
   public static int backUltraSonicEcho = 9;
   public static int backUltraSonicTrigger = 8;
   public static int frontUltraSonicEcho = 7;
   public static int frontUltraSonicTrigger = 6;
+
+  public static int leftIntakeServo = 0;
+  public static int rightIntakeServo = 1;
+  public static int colourArm = 3;
 
 }
 

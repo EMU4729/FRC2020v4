@@ -70,10 +70,10 @@ public class BeltSubsystem implements Subsystem {
   public void checkBelts() {
     double backDistance = Robot.ultraSonicSubsystem.getBackDistance();
     double frontDistance = Robot.ultraSonicSubsystem.getFrontDistance();
-    double onTime = 0.7;
+    double onTime = 0.5;
     //test with controller
     ballCount = SmartDashboard.getNumber("Ball Count", 0);
-    if ((controller.getRawButton(7) | (backDistance > 200 | backDistance < 100)) && !isOn) {
+    if ((backDistance > 200 | backDistance < 100) && !isOn && (downTimer.get() > 0.5 | downTimer.get() == 0)) {
       start();
       Robot.intakeSubsystem.startBelt();
       beltTimer.reset();
@@ -92,15 +92,14 @@ public class BeltSubsystem implements Subsystem {
       beltTimer.stop();
       beltTimer.reset();
       downTimer.start();
+      downTimer.reset();
       // System.out.print("stopped motors% due to ultrasonic input");
     }
-    if (downTimer.get() > 5 && downTimer.get() < 5.2 && !isOn) {
+    if (downTimer.get() > 5 && downTimer.get() < 5.2 && !isOn && false) {
       frontBelt.set(ControlMode.PercentOutput, -0.5);
       backBelt.set(ControlMode.PercentOutput, 0.5);
       
     } else if (!isOn) {
-      downTimer.stop();
-      downTimer.reset();
       stop();
     }
   }

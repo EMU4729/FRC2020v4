@@ -12,6 +12,7 @@ import frc.robot.RobotMap;
 import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -23,16 +24,19 @@ public class ColourSubsystem implements Subsystem {
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
 
   private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
+  private Servo arm;
 
+  public ColourSubsystem() {
+    arm = new Servo(RobotMap.colourArm);
+  }
 
-  public String getColour() {
+  public int getColour() {
     Color detectedColor = m_colorSensor.getColor();
-
     int colour = 0;
     double red = detectedColor.red;
     double green = detectedColor.green;
     double blue = detectedColor.blue;
-    String colours [] = {"blue","green","red","yellow"};    
+    String colours [] = {"B","G","R","Y"};    
     int shift = 0; 
 
     if (Math.max(Math.max(red,green),blue) == blue) {
@@ -51,7 +55,7 @@ public class ColourSubsystem implements Subsystem {
 
 
     SmartDashboard.putString("Detected Color", colours[colour]);
-    return colours[colour];
+    return colour;
   }
 
   public void initDefaultCommand() {
@@ -60,5 +64,14 @@ public class ColourSubsystem implements Subsystem {
   }
 
   public void stop() {
+  }
+
+  public void lower() {
+    arm.set(1);
+    System.out.println(arm.get());
+  }
+
+  public void raise() {
+    arm.set(0.6);
   }
 }
